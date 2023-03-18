@@ -9,6 +9,6 @@ public class UsersRepositoryTests {
     void saveUserTest() {
         var usersRepository = new UsersRepository();
         usersRepository.save(null);
-        Assertions.assertEquals(0, usersRepository.getUsers());
+        Assertions.assertEquals(0, usersRepository.getUsers().stream().count());
     }
 }

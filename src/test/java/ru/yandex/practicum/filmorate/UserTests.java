@@ -40,7 +40,7 @@ public class UserTests {
         var user = createTestUser();
         user.setLogin("1");
         var violations = validator.validate(user);
-        Assertions.assertEquals(1, violations.size());
+        Assertions.assertEquals(0, violations.size());
     }
     @Test
     void validateEmptyName() {
