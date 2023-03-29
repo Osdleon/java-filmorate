@@ -1,8 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
-import ru.yandex.practicum.filmorate.exceptions.UserValidationException;
+import ru.yandex.practicum.filmorate.exceptions.FilmValidationException;
 
-import javax.validation.ValidationException;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -12,12 +11,16 @@ public class FilmsRepository {
     public FilmsRepository() {
     }
     public void save(Film film) {
+        if (film == null)
+            return;
         film.setId(++filmId);
         repository.put(film.id, film);
     }
     public void saveOrUpdate(Film film) {
+        if (film == null)
+            return;
         if (!repository.containsKey(film.id))
-            throw new UserValidationException("Film with the id: " + film.id + "doesn't exist.");
+            throw new FilmValidationException("Film with the id: " + film.id + "doesn't exist.");
         repository.put(film.id, film);
     }
     public Collection<Film> getFilms() {

@@ -22,6 +22,8 @@ public class UsersRepository {
         repository.put(user.id, user);
     }
     public void saveOrUpdate(User user) {
+        if (user == null)
+            return;
         if (!repository.containsKey(user.id))
             throw new UserValidationException("User with the id: " + user.id + "doesn't exist.");
         processUserName(user);
