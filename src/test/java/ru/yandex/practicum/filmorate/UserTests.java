@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.UsersRepository;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.time.LocalDate;
-
 import java.time.format.DateTimeFormatter;
 
 public class UserTests {
@@ -19,8 +18,9 @@ public class UserTests {
         var validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.usingContext().getValidator();
     }
-    User createTestUser(){
-        var user =  new User();
+
+    User createTestUser() {
+        var user = new User();
         user.setId(1);
         user.setLogin("login");
         user.setName("name");
@@ -28,6 +28,7 @@ public class UserTests {
         user.setBirthday(LocalDate.parse("20230101", DateTimeFormatter.BASIC_ISO_DATE));
         return user;
     }
+
     @Test
     void validateEmptyLogin() {
         var user = createTestUser();
@@ -35,6 +36,7 @@ public class UserTests {
         var violations = validator.validate(user);
         Assertions.assertEquals(1, violations.size());
     }
+
     @Test
     void validateLogin() {
         var user = createTestUser();
@@ -42,6 +44,7 @@ public class UserTests {
         var violations = validator.validate(user);
         Assertions.assertEquals(0, violations.size());
     }
+
     @Test
     void validateEmptyName() {
         var user = createTestUser();
@@ -60,6 +63,7 @@ public class UserTests {
         var violations = validator.validate(user);
         Assertions.assertEquals(0, violations.size());
     }
+
     @Test
     void validateEmail() {
         var user = createTestUser();
