@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class ValidationService {
     LocalDate limitDate;
+
     public ValidationService() {
         limitDate = LocalDate.parse("18951228", DateTimeFormatter.BASIC_ISO_DATE);
     }

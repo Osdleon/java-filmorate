@@ -8,12 +8,15 @@ import java.util.HashMap;
 public class UsersRepository {
     HashMap<Integer, User> repository = new HashMap<>();
     int userId;
+
     public UsersRepository() {
     }
+
     void processUserName(User user) {
         if (user.name == null || user.name.isBlank())
             user.name = user.login;
     }
+
     public void save(User user) {
         if (user == null)
             return;
@@ -21,6 +24,7 @@ public class UsersRepository {
         user.setId(++userId);
         repository.put(user.id, user);
     }
+
     public void saveOrUpdate(User user) {
         if (user == null)
             return;
@@ -29,6 +33,7 @@ public class UsersRepository {
         processUserName(user);
         repository.put(user.id, user);
     }
+
     public Collection<User> getUsers() {
         return repository.values();
     }
