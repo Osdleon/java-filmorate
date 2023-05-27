@@ -3,19 +3,19 @@ package ru.yandex.practicum.filmorate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmsRepository;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
-public class FilmsRepositoryTests {
+public class InMemoryFilmStorageTests {
     @Test
     void saveNullTest() {
-        var filmsRepository = new FilmsRepository();
+        var filmsRepository = new InMemoryFilmStorage();
         filmsRepository.save(null);
         Assertions.assertEquals(0, (long) filmsRepository.getFilms().size());
     }
 
     @Test
     void saveFilmTest() {
-        var filmsRepository = new FilmsRepository();
+        var filmsRepository = new InMemoryFilmStorage();
         filmsRepository.save(new Film());
         Assertions.assertEquals(1, (long) filmsRepository.getFilms().size());
         Film firstUser = filmsRepository.getFilms().stream().findFirst().orElse(null);
@@ -25,7 +25,7 @@ public class FilmsRepositoryTests {
 
     @Test
     void updateFilmTest() {
-        var filmsRepository = new FilmsRepository();
+        var filmsRepository = new InMemoryFilmStorage();
         filmsRepository.save(new Film());
         var film = new Film();
         film.setName("name");
