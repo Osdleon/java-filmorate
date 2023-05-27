@@ -21,9 +21,10 @@ public class Film {
     long duration;
     Set<Long> likes;
 
-    public Film(){
+    public Film() {
         likes = new HashSet<>();
     }
+
     public long getId() {
         return id;
     }

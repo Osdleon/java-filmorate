@@ -10,6 +10,8 @@ public interface UserStorage {
     void saveOrUpdate(User user);
 
     User getUser(long userId);
+
     Collection<User> getUsers();
+
     Collection<User> getFriends(long userId);
 }

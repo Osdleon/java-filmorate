@@ -36,6 +36,7 @@ public class UserService {
         user.getFriends().remove(friend.getId());
         friend.getFriends().remove(user.getId());
     }
+
     public void addFriend(Long userId, Long friendId, UserStorage userStorage) {
         var user = userStorage.getUser(userId);
         if (user == null)
@@ -59,6 +60,7 @@ public class UserService {
         userStorage.saveOrUpdate(user);
         userStorage.saveOrUpdate(friend);
     }
+
     public Collection<User> getCommonFriends(Long id, Long otherId, UserStorage userStorage) {
         var userFriends = userStorage.getFriends(id);
         var otherUserFriends = userStorage.getFriends(otherId);

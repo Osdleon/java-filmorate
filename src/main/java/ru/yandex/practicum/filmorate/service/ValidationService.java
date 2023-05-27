@@ -23,6 +23,7 @@ public class ValidationService {
         if (date.isBefore(limitDate))
             throw new FilmValidationException("Film release date is incorrect.");
     }
+
     public void validateUserId(long id) {
         if (id < 0)
             throw new UserNotFoundException("User id is incorrect.");

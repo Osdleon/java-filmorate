@@ -73,6 +73,7 @@ public class FilmController {
         var res = filmService.getMostLikedFilms(count, storage);
         return res;
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleUserValidation(final FilmValidationException e) {
@@ -84,11 +85,13 @@ public class FilmController {
     public Map<String, String> handleUserValidation(final FilmNotFoundException e) {
         return Map.of("error", e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleUserValidation(final UserNotFoundException e) {
         return Map.of("error", e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleUserException(final Exception e) {

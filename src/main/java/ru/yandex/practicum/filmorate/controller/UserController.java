@@ -82,6 +82,7 @@ public class UserController {
     public Map<String, String> handleUserValidation(final UserNotFoundException e) {
         return Map.of("error", e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleUserException(final Exception e) {
