@@ -9,9 +9,11 @@ public interface FilmStorage {
 
     void saveOrUpdate(Film film);
 
-    Collection<Film> getFilms();
-
     void deleteFilmLike(long filmId, long userId);
 
     void likeFilm(long filmId, long userId);
+
+    Collection<Film> getFilms();
+
+    Film getFilm(long filmId);
 }

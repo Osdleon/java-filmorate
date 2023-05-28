@@ -32,12 +32,10 @@ class FilmControllerTests {
     void setup(WebApplicationContext wac) {
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new FilmController(
-                        new InMemoryFilmStorage(),
                         new ValidationService(),
-                        new FilmService()),
+                        new FilmService(new InMemoryFilmStorage())),
                 new UserController(
-                        new InMemoryUserStorage(),
-                        new UserService())).build();
+                        new UserService(new InMemoryUserStorage()))).build();
     }
 
     @Test

@@ -28,8 +28,7 @@ class UserControllerTests {
     void setup(WebApplicationContext wac) {
         mockMvc = MockMvcBuilders.standaloneSetup(
                 new UserController(
-                        new InMemoryUserStorage(),
-                        new UserService())).build();
+                        new UserService(new InMemoryUserStorage()))).build();
     }
 
     @Test

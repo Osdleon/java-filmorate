@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.ValidationService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -21,13 +20,12 @@ import java.util.Optional;
 @RequestMapping("films")
 @Validated
 public class FilmController {
-    InMemoryFilmStorage storage;
-    ValidationService validationService;
-    FilmService filmService;
+    private static final String ERROR = "error";
+    private final ValidationService validationService;
+    private final FilmService filmService;
 
     @Autowired
-    public FilmController(InMemoryFilmStorage storage, ValidationService validationService, FilmService filmService) {
-        this.storage = storage;
+    public FilmController(ValidationService validationService, FilmService filmService) {
         this.validationService = validationService;
         this.filmService = filmService;
     }
@@ -35,66 +33,65 @@ public class FilmController {
     @PostMapping
     Film saveFilm(@RequestBody @Valid Film film) {
         validationService.validateFilmDate(film);
-        storage.save(film);
+        filmService.save(film);
         return film;
     }
 
     @PutMapping
     Film updateFilm(@RequestBody @Valid Film film) {
         validationService.validateFilmDate(film);
-        storage.saveOrUpdate(film);
+        filmService.saveOrUpdate(film);
         return film;
     }
 
     @GetMapping
     Collection<Film> getFilms() {
-        return storage.getFilms();
+        return filmService.getFilms();
     }
 
     @GetMapping("/{id}")
     Film getUser(@PathVariable long id) {
-        return storage.getFilm(id);
+        return filmService.getFilm(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
     void addLike(@PathVariable long id, @PathVariable long userId) {
         validationService.validateUserId(userId);
-        filmService.likeFilm(id, userId, storage);
+        filmService.likeFilm(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     void deleteLike(@PathVariable long id, @PathVariable long userId) {
         validationService.validateUserId(userId);
-        filmService.deleteFilmLike(id, userId, storage);
+        filmService.deleteFilmLike(id, userId);
     }
 
     @GetMapping("/popular")
     Collection<Film> getMostPopular(@RequestParam Optional<Integer> count) {
-        var res = filmService.getMostLikedFilms(count, storage);
-        return res;
+        return filmService.getMostLikedFilms(count);
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleUserValidation(final FilmValidationException e) {
-        return Map.of("error", e.getMessage());
+    Map<String, String> handleUserValidation(final FilmValidationException e) {
+        return Map.of(ERROR, e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleUserValidation(final FilmNotFoundException e) {
-        return Map.of("error", e.getMessage());
+    Map<String, String> handleUserValidation(final FilmNotFoundException e) {
+        return Map.of(ERROR, e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleUserValidation(final UserNotFoundException e) {
-        return Map.of("error", e.getMessage());
+    Map<String, String> handleUserValidation(final UserNotFoundException e) {
+        return Map.of(ERROR, e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleUserException(final Exception e) {
-        return Map.of("error", e.getMessage());
+    Map<String, String> handleUserException(final Exception e) {
+        return Map.of(ERROR, e.getMessage());
     }
 }
