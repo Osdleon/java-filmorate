@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private final String USER_WITH_THE_ID = "User with the id: ";
-    private static final String USER_FRIEND_WITH_THE_ID = "User friend with the id: ";
-    private static final String DOESN_T_EXIST = "doesn't exist.";
-    private static final String ALREADY_HAVE_FRIEND_WITH_ID = "already have friend with id:";
-    private static final String DOESN_T_HAVE_FRIEND_WITH_ID = "doesn't have friend with id:";
+    private final String userWithTheId = "User with the id: ";
+    private static final String userFriendWithTheId = "User friend with the id: ";
+    private static final String doesntExist = "doesn't exist.";
+    private static final String alreadyHaveFriendWithId = "already have friend with id:";
+    private static final String doesntHaveFriendWithId = "doesn't have friend with id:";
     InMemoryUserStorage storage;
 
     @Autowired
@@ -28,12 +28,12 @@ public class UserService {
         if (user.getFriends() == null)
             user.setFriends(new HashSet<>());
         else if (user.getFriends().contains(friend.getId()))
-            throw new UserNotFoundException(USER_WITH_THE_ID + user.getId() + ALREADY_HAVE_FRIEND_WITH_ID
+            throw new UserNotFoundException(userWithTheId + user.getId() + alreadyHaveFriendWithId
                     + friend.getId() + " .");
         if (friend.getFriends() == null)
             friend.setFriends(new HashSet<>());
         else if (friend.getFriends().contains(user.getId()))
-            throw new UserNotFoundException(USER_WITH_THE_ID + friend.getId() + ALREADY_HAVE_FRIEND_WITH_ID
+            throw new UserNotFoundException(userWithTheId + friend.getId() + alreadyHaveFriendWithId
                     + user.getId() + " .");
         user.getFriends().add(friend.getId());
         friend.getFriends().add(user.getId());
@@ -41,10 +41,10 @@ public class UserService {
 
     void removeFriend(User user, User friend) {
         if (user.getFriends() == null || !user.getFriends().contains(friend.getId()))
-            throw new UserNotFoundException(USER_WITH_THE_ID + user.getId() + DOESN_T_HAVE_FRIEND_WITH_ID
+            throw new UserNotFoundException(userWithTheId + user.getId() + doesntHaveFriendWithId
                     + friend.getId() + " .");
         if (friend.getFriends() == null || !friend.getFriends().contains(user.getId()))
-            throw new UserNotFoundException(USER_WITH_THE_ID + friend.getId() + DOESN_T_HAVE_FRIEND_WITH_ID
+            throw new UserNotFoundException(userWithTheId + friend.getId() + doesntHaveFriendWithId
                     + user.getId() + " .");
         user.getFriends().remove(friend.getId());
         friend.getFriends().remove(user.getId());
@@ -53,10 +53,10 @@ public class UserService {
     public void addFriend(Long userId, Long friendId) {
         var user = storage.getUser(userId);
         if (user == null)
-            throw new UserNotFoundException(USER_WITH_THE_ID + userId + DOESN_T_EXIST);
+            throw new UserNotFoundException(userWithTheId + userId + doesntExist);
         var friend = storage.getUser(friendId);
         if (friend == null)
-            throw new UserNotFoundException(USER_FRIEND_WITH_THE_ID + friendId + DOESN_T_EXIST);
+            throw new UserNotFoundException(userFriendWithTheId + friendId + doesntExist);
         addFriend(user, friend);
         storage.saveOrUpdate(user);
         storage.saveOrUpdate(friend);
@@ -65,10 +65,10 @@ public class UserService {
     public void removeFriend(Long userId, Long friendId) {
         var user = storage.getUser(userId);
         if (user == null)
-            throw new UserNotFoundException(USER_WITH_THE_ID + userId + DOESN_T_EXIST);
+            throw new UserNotFoundException(userWithTheId + userId + doesntExist);
         var friend = storage.getUser(friendId);
         if (friend == null)
-            throw new UserNotFoundException(USER_FRIEND_WITH_THE_ID + friendId + DOESN_T_EXIST);
+            throw new UserNotFoundException(userFriendWithTheId + friendId + doesntExist);
         removeFriend(user, friend);
         storage.saveOrUpdate(user);
         storage.saveOrUpdate(friend);

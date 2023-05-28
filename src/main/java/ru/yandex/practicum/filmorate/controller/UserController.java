@@ -17,7 +17,7 @@ import java.util.Map;
 @RequestMapping("users")
 @Validated
 public class UserController {
-    private static final String ERROR = "error";
+    private static final String error = "error";
     private final UserService userService;
 
     @Autowired
@@ -70,18 +70,18 @@ public class UserController {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     Map<String, String> handleUserValidation(final UserValidationException e) {
-        return Map.of(ERROR, e.getMessage());
+        return Map.of(error, e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     Map<String, String> handleUserValidation(final UserNotFoundException e) {
-        return Map.of(ERROR, e.getMessage());
+        return Map.of(error, e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     Map<String, String> handleUserException(final Exception e) {
-        return Map.of(ERROR, e.getMessage());
+        return Map.of(error, e.getMessage());
     }
 }

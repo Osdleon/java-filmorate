@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequestMapping("films")
 @Validated
 public class FilmController {
-    private static final String ERROR = "error";
+    private static final String error = "error";
     private final ValidationService validationService;
     private final FilmService filmService;
 
@@ -74,24 +74,24 @@ public class FilmController {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     Map<String, String> handleUserValidation(final FilmValidationException e) {
-        return Map.of(ERROR, e.getMessage());
+        return Map.of(error, e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     Map<String, String> handleUserValidation(final FilmNotFoundException e) {
-        return Map.of(ERROR, e.getMessage());
+        return Map.of(error, e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     Map<String, String> handleUserValidation(final UserNotFoundException e) {
-        return Map.of(ERROR, e.getMessage());
+        return Map.of(error, e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     Map<String, String> handleUserException(final Exception e) {
-        return Map.of(ERROR, e.getMessage());
+        return Map.of(error, e.getMessage());
     }
 }
