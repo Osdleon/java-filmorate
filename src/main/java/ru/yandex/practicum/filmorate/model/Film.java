@@ -6,10 +6,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film {
-    int id;
+    long id;
     @NotBlank
     String name;
     @Size(max = 200)
@@ -17,4 +19,9 @@ public class Film {
     LocalDate releaseDate;
     @Positive
     long duration;
+    Set<Long> likes;
+
+    public Film() {
+        likes = new HashSet<>();
+    }
 }

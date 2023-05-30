@@ -3,19 +3,19 @@ package ru.yandex.practicum.filmorate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.model.UsersRepository;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
-public class UsersRepositoryTests {
+public class InMemoryUserStorageTests {
     @Test
     void saveNullTest() {
-        var usersRepository = new UsersRepository();
+        var usersRepository = new InMemoryUserStorage();
         usersRepository.save(null);
         Assertions.assertEquals(0, (long) usersRepository.getUsers().size());
     }
 
     @Test
     void saveUserTest() {
-        var usersRepository = new UsersRepository();
+        var usersRepository = new InMemoryUserStorage();
         usersRepository.save(new User());
         Assertions.assertEquals(1, (long) usersRepository.getUsers().size());
         User firstUser = usersRepository.getUsers().stream().findFirst().orElse(null);
@@ -25,7 +25,7 @@ public class UsersRepositoryTests {
 
     @Test
     void updateUserTest() {
-        var usersRepository = new UsersRepository();
+        var usersRepository = new InMemoryUserStorage();
         usersRepository.save(new User());
         var user = new User();
         user.setLogin("login");
