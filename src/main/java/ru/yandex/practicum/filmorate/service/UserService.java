@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,10 +18,10 @@ public class UserService {
     private static final String doesntExist = "doesn't exist.";
     private static final String alreadyHaveFriendWithId = "already have friend with id:";
     private static final String doesntHaveFriendWithId = "doesn't have friend with id:";
-    InMemoryUserStorage storage;
+    UserStorage storage;
 
     @Autowired
-    public UserService(InMemoryUserStorage storage) {
+    public UserService(UserStorage storage) {
         this.storage = storage;
     }
 
