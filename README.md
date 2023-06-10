@@ -9,6 +9,8 @@ I have used the following tool - [dbdiagram](https://dbdiagram.io) to designe th
 
 ### Below is DBML code snippet for the scheme:
 ```sql
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
 Project filmorate {
   database_type: 'PostgreSQL'
   Note: 'Task 11'
@@ -20,13 +22,12 @@ Table user {
   login varchar [not null]
   name varchar
   local_date date
-  friend_id integer
 }
 
 Table friends {
   user_id integer 
   friend_id integer
-  status varchar
+  status boolean
     indexes {
       (user_id, friend_id) [pk]
   }
@@ -37,7 +38,7 @@ Table film {
   description varchar(200)
   release_date date    
   duration integer 
-  mpa_rating varchar(5)   
+  mpa_id integer   
 }
 Table likes {
   film_id integer
@@ -47,19 +48,37 @@ Table likes {
   }
 }
 
-Table genre {
+Table film_genre {
   film_id integer
-  name varchar
+  genre_id integer
     indexes {
-      (film_id, name) [pk]
+      (film_id, genre_id) [pk]
   }
 }
 
-Ref: genre.film_id > film.id
-Ref: user.friend_id < friends.user_id
-Ref: user.id < friends.friend_id
+table mpa {
+  id integer [pk]
+  name varchar(10)
+}
+
+table film_mpa {
+  film_id integer [pk]
+  mpa_id integer
+}
+
+table genre {
+  id integer [pk]
+  name varchar
+}
+
+Ref: film_mpa.mpa_id > mpa.id
+Ref: film_mpa.film_id > film.mpa_id
+Ref: genre.id < film_genre.genre_id
+Ref: film_genre.film_id > film.id
+Ref: user.id < friends.user_id
 Ref: film.id < likes.film_id
 Ref: user.id < likes.user_id
+
 ```
 
 ### Below is Postgre SQL DDL code snippet for the scheme:
