@@ -16,7 +16,7 @@ VALUES
 ('Фильм5', 'description5', '2020-01-01', 5);
 
 INSERT INTO "user"
-("email", "login", "name", "local_date")
+("email", "login", "name", "birthday")
 VALUES
 ('he@mail.com','HE', 'Вася', '2002-02-02'),
 ('she@mail.com','SHE', 'Петя', '2003-03-03'),
