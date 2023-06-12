@@ -25,11 +25,10 @@ public class FilmDbStorage implements FilmStorage {
     private static final String insertGenreOperation = "INSERT INTO \"film_genre\" (\"film_id\", \"genre_id\") VALUES(?, ?);";
     private static final String updateOperation = "UPDATE \"film\" SET \"name\" = ?, \"description\"  = ?, \"release_date\"  = ?, \"duration\" = ? WHERE \"id\" = ?";
     private static final String updateMpaOperation = "UPDATE \"film_mpa\" SET \"mpa_id\" = ? WHERE \"film_id\" = ?";
-    private static final String updateGenreOperation = "UPDATE \"film_genre\" SET \"genre_id\" = ? WHERE \"film_id\" = ?";
     private static final String getFilmsOperation = "SELECT * FROM \"film\";";
     private static final String removeFilmGenreOperation = "DELETE FROM \"film_genre\" WHERE \"film_id\" = ?;";
     private static final String insertLikeOperation = "INSERT INTO \"likes\" (\"film_id\", \"user_id\") VALUES(?, ?);";
-    private static final String getFilmLikesOperation = "SELECT * FROM  \"likes\";";
+    private static final String deleteLikeOperation = "DELETE FROM \"likes\" WHERE \"film_id\" = ? AND \"user_id\" = ?;";
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -228,13 +227,12 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void deleteFilmLike(long filmId, long userId) {
-//        removeFilmOperation
-//        jdbcTemplate.update(connection -> {
-//            PreparedStatement ps = connection.prepareStatement(removeFriendOperation, Statement.RETURN_GENERATED_KEYS);
-//            ps.setLong(1, user.getId());
-//            ps.setLong(2, friend.getId());
-//            return ps;
-//        });
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(deleteLikeOperation);
+            ps.setLong(1, filmId);
+            ps.setLong(2, userId);
+            return ps;
+        });
     }
 
     public void likeFilm(long filmId, long userId) {

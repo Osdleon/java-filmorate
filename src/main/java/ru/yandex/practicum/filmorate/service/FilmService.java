@@ -36,7 +36,9 @@ public class FilmService {
     public Collection<Film> getMostLikedFilms(Optional<Integer> count) {
         var films = filmStorage.getFilms();
         TreeSet<Film> sortedFilms = new TreeSet<>(Comparator.comparingInt(
-                f -> f.getLikes().size()));
+                f -> ((Film)f).getLikes().size())
+                .thenComparing(f -> ((Film)f).getId())
+        );
         sortedFilms.addAll(films);
         return sortedFilms.descendingSet().stream().limit(count.orElse(10)).collect(Collectors.toList());
     }
@@ -52,13 +54,15 @@ public class FilmService {
     public Collection<Film> getFilms() {
         return this.filmStorage.getFilms();
     }
-    public Mpa getMpa(long id){
+
+    public Mpa getMpa(long id) {
         var mpa = filmStorage.getMpa(id);
         if (mpa == null)
             throw new MpaNotFoundException();
         return mpa;
     }
-    public Genre getGenre(long id){
+
+    public Genre getGenre(long id) {
         var genre = filmStorage.getGenre(id);
         if (genre == null)
             throw new GenreNotFoundException();
