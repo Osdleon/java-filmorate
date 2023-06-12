@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
 import java.sql.*;
@@ -27,8 +26,10 @@ public class FilmDbStorage implements FilmStorage {
     private static final String updateOperation = "UPDATE \"film\" SET \"name\" = ?, \"description\"  = ?, \"release_date\"  = ?, \"duration\" = ? WHERE \"id\" = ?";
     private static final String updateMpaOperation = "UPDATE \"film_mpa\" SET \"mpa_id\" = ? WHERE \"film_id\" = ?";
     private static final String updateGenreOperation = "UPDATE \"film_genre\" SET \"genre_id\" = ? WHERE \"film_id\" = ?";
-    private static final String getFilmsOperation = "SELECT * FROM \"film\"";
+    private static final String getFilmsOperation = "SELECT * FROM \"film\";";
     private static final String removeFilmGenreOperation = "DELETE FROM \"film_genre\" WHERE \"film_id\" = ?;";
+    private static final String insertLikeOperation = "INSERT INTO \"likes\" (\"film_id\", \"user_id\") VALUES(?, ?);";
+    private static final String getFilmLikesOperation = "SELECT * FROM  \"likes\";";
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -81,11 +82,11 @@ public class FilmDbStorage implements FilmStorage {
     public Mpa getMpa(long id) {
         var getMpaOperation = "SELECT * FROM \"mpa\" WHERE \"id\" = ?;";
         return jdbcTemplate.query(getMpaOperation, (rs, rowNum) -> {
-                    var mpa = new Mpa();
-                    mpa.setId(rs.getLong("id"));
-                    mpa.setName(rs.getString("name"));
-                    return mpa;
-                }, id).stream().findFirst().orElse(null);
+            var mpa = new Mpa();
+            mpa.setId(rs.getLong("id"));
+            mpa.setName(rs.getString("name"));
+            return mpa;
+        }, id).stream().findFirst().orElse(null);
     }
 
     @Override
@@ -138,6 +139,8 @@ public class FilmDbStorage implements FilmStorage {
         mpa.ifPresent(film::setMpa);
         var genres = getFilmGenres(filmId);
         film.setGenres(new HashSet<>(genres));
+        var likes = getFilmLikes(film.getId());
+        film.setLikes(new HashSet<>(likes));
         return film;
     }
 
@@ -153,6 +156,8 @@ public class FilmDbStorage implements FilmStorage {
         mpa.ifPresent(film::setMpa);
         var genres = getFilmGenres(film.getId());
         film.setGenres(new HashSet<>(genres));
+        var likes = getFilmLikes(film.getId());
+        film.setLikes(new HashSet<>(likes));
         return film;
     }
 
@@ -166,6 +171,11 @@ public class FilmDbStorage implements FilmStorage {
         var getGenreOperation = "SELECT * FROM \"film_genre\" WHERE \"film_id\" = ?;";
         return jdbcTemplate.query(getGenreOperation, (rs, rowNum) ->
                 createGenre(rs), filmId);
+    }
+
+    private Collection<Long> getFilmLikes(long filmId) {
+        var getGenreOperation = "SELECT \"user_id\" FROM \"likes\" WHERE \"film_id\" = ?;";
+        return jdbcTemplate.query(getGenreOperation, (rs, rowNum) -> rs.getLong("user_id"), filmId);
     }
 
     private Mpa createMpa(ResultSet resultSet) throws SQLException {
@@ -204,7 +214,7 @@ public class FilmDbStorage implements FilmStorage {
             jdbcTemplate.update(updateMpaOperation, film.getMpa().getId(), film.getId());
         removeFilmGenres(film.getId());
         for (Genre genre : film.getGenres())
-            saveGenre( film.getId(), genre.getId());
+            saveGenre(film.getId(), genre.getId());
         return getFilm(film.getId());
     }
 
@@ -215,6 +225,7 @@ public class FilmDbStorage implements FilmStorage {
             return ps;
         });
     }
+
     @Override
     public void deleteFilmLike(long filmId, long userId) {
 //        removeFilmOperation
@@ -226,9 +237,13 @@ public class FilmDbStorage implements FilmStorage {
 //        });
     }
 
-    @Override
     public void likeFilm(long filmId, long userId) {
-
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(insertLikeOperation);
+            ps.setLong(1, filmId);
+            ps.setLong(2, userId);
+            return ps;
+        });
     }
 
     public Collection<Film> getFilms() {
