@@ -7,18 +7,21 @@ import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static ru.yandex.practicum.filmorate.service.UserService.*;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
     HashMap<Long, User> repository = new HashMap<>();
     int userId;
 
-    void processUserName(User user) {
-        if (user.getName() == null || user.getName().isBlank())
-            user.setName(user.getLogin());
-    }
+//    void processUserName(User user) {
+//        if (user.getName() == null || user.getName().isBlank())
+//            user.setName(user.getLogin());
+//    }
 
     public User getUser(long userId) {
         if (!repository.containsKey(userId))
@@ -26,21 +29,23 @@ public class InMemoryUserStorage implements UserStorage {
         return repository.get(userId);
     }
 
-    public void save(User user) {
+    public User save(User user) {
         if (user == null)
-            return;
-        processUserName(user);
+            return null;
+        // processUserName(user);
         user.setId(++userId);
         repository.put(user.getId(), user);
+        return user;
     }
 
-    public void saveOrUpdate(User user) {
+    public User saveOrUpdate(User user) {
         if (user == null)
-            return;
+            return null;
         if (!repository.containsKey(user.getId()))
             throw new UserNotFoundException("User with the id: " + user.getId() + "doesn't exist.");
-        processUserName(user);
+        // processUserName(user);
         repository.put(user.getId(), user);
+        return user;
     }
 
     public Collection<User> getUsers() {
@@ -50,5 +55,35 @@ public class InMemoryUserStorage implements UserStorage {
     public Collection<User> getFriends(long userId) {
         return getUser(userId).getFriends().stream().map(this::getUser).filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    public void removeFriend(User user, User friend) {
+        if (user.getFriends() == null || !user.getFriends().contains(friend.getId()))
+            throw new UserNotFoundException(userWithTheId + user.getId() + doesntHaveFriendWithId
+                    + friend.getId() + " .");
+        if (friend.getFriends() == null || !friend.getFriends().contains(user.getId()))
+            throw new UserNotFoundException(userWithTheId + friend.getId() + doesntHaveFriendWithId
+                    + user.getId() + " .");
+        user.getFriends().remove(friend.getId());
+        friend.getFriends().remove(user.getId());
+        saveOrUpdate(user);
+        saveOrUpdate(friend);
+    }
+
+    public void addFriend(User user, User friend) {
+        if (user.getFriends() == null)
+            user.setFriends(new HashSet<>());
+        else if (user.getFriends().contains(friend.getId()))
+            throw new UserNotFoundException(userWithTheId + user.getId() + alreadyHaveFriendWithId
+                    + friend.getId() + " .");
+        if (friend.getFriends() == null)
+            friend.setFriends(new HashSet<>());
+        else if (friend.getFriends().contains(user.getId()))
+            throw new UserNotFoundException(userWithTheId + friend.getId() + alreadyHaveFriendWithId
+                    + user.getId() + " .");
+        user.getFriends().add(friend.getId());
+        friend.getFriends().add(user.getId());
+        saveOrUpdate(user);
+        saveOrUpdate(friend);
     }
 }
