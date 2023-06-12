@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
 import java.util.Collection;
@@ -48,8 +50,22 @@ public class FilmService {
     public Collection<Film> getFilms() {
         return this.filmStorage.getFilms();
     }
+    public Mpa getMpa(long id){
+        return filmStorage.getMpa(id);
+    }
+    public Genre getGenre(long id){
+        return filmStorage.getGenre(id);
+    }
 
     public Film getFilm(long filmId) {
         return this.filmStorage.getFilm(filmId);
+    }
+
+    public Collection<Genre> getGenres() {
+        return filmStorage.getGenres();
+    }
+
+    public Collection<Mpa> getMpas() {
+        return filmStorage.getMpas();
     }
 }

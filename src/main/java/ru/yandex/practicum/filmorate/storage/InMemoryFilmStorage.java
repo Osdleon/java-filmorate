@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
 import java.util.Collection;
@@ -56,5 +58,25 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (!repository.containsKey(filmId))
             throw new FilmNotFoundException("User with the id: " + filmId + "doesn't exist.");
         return repository.get(filmId);
+    }
+
+    @Override
+    public Mpa getMpa(long id) {
+        return null;
+    }
+
+    @Override
+    public Genre getGenre(long id) {
+        return null;
+    }
+
+    @Override
+    public Collection<Genre> getGenres() {
+        return null;
+    }
+
+    @Override
+    public Collection<Mpa> getMpas() {
+        return null;
     }
 }

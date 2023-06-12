@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS "likes" (
 
 CREATE TABLE IF NOT EXISTS "genre" (
   "id" integer PRIMARY KEY,
-  "genre_name" varchar
+  "name" varchar
 );
 
 CREATE TABLE IF NOT EXISTS "film_genre" (

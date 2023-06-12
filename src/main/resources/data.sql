@@ -1,4 +1,4 @@
-INSERT INTO "genre" ("id", "genre_name")
+INSERT INTO "genre" ("id", "name")
 VALUES (1, 'Боевик'),
        (2, 'Комедия'),
        (3, 'Драма'),

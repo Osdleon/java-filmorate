@@ -2,10 +2,8 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-
 @Data
-public class Mpa {
+public class Genre {
     long id;
     String name;
 }
