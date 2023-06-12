@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.GenreNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -51,10 +53,16 @@ public class FilmService {
         return this.filmStorage.getFilms();
     }
     public Mpa getMpa(long id){
-        return filmStorage.getMpa(id);
+        var mpa = filmStorage.getMpa(id);
+        if (mpa == null)
+            throw new MpaNotFoundException();
+        return mpa;
     }
     public Genre getGenre(long id){
-        return filmStorage.getGenre(id);
+        var genre = filmStorage.getGenre(id);
+        if (genre == null)
+            throw new GenreNotFoundException();
+        return genre;
     }
 
     public Film getFilm(long filmId) {
