@@ -13,19 +13,21 @@ public class InMemoryFilmStorage implements FilmStorage {
     HashMap<Long, Film> repository = new HashMap<>();
     int filmId;
 
-    public void save(Film film) {
+    public Film save(Film film) {
         if (film == null)
-            return;
+            return null;
         film.setId(++filmId);
         repository.put(film.getId(), film);
+        return film;
     }
 
-    public void saveOrUpdate(Film film) {
+    public Film saveOrUpdate(Film film) {
         if (film == null)
-            return;
+            return null;
         if (!repository.containsKey(film.getId()))
             throw new FilmNotFoundException("Film with the id: " + film.getId() + "doesn't exist.");
         repository.put(film.getId(), film);
+        return film;
     }
 
     public Collection<Film> getFilms() {

@@ -16,7 +16,6 @@ import java.util.Objects;
 @Component("userDbStorage")
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
-    //private final SimpleJdbcInsert insertIntoUser;
     private static final String insertOperation = "INSERT INTO \"user\" (\"email\", \"login\", \"name\", \"birthday\") VALUES(?, ?, ?, ?);";
     private static final String updateOperation = "UPDATE \"user\" SET \"email\" = ?, \"login\"  = ?, \"name\"  = ?, \"birthday\" = ? WHERE \"id\" = ?";
     private static final String addFriendOperation = "INSERT INTO \"friends\" (\"user_id\", \"friend_id\", \"status\") VALUES(?, ?, ?);";
@@ -25,7 +24,6 @@ public class UserDbStorage implements UserStorage {
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        //insertIntoUser = new SimpleJdbcInsert(jdbcTemplate).withTableName("user").usingGeneratedKeyColumns("id");
     }
 
     @Override
@@ -100,14 +98,6 @@ public class UserDbStorage implements UserStorage {
         return jdbcTemplate.query(getFriendshipOperation, (rs, rowNum) ->
                 rs.getBoolean("status"), userId, friendId);
     }
-
-    //    @Override
-//    public void save(User user) {
-//        jdbcTemplate.update("INSERT INTO \"user\"" +
-//                        " (\"email\", \"login\", \"name\", \"birthday\")" +
-//                        " VALUES(?, ?, ?, ?);",
-//                user.getEmail(), user.getLogin(), user.getName(), user.getBirthday());
-//    }
     public void addFriend(User user, User friend) {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(addFriendOperation, Statement.RETURN_GENERATED_KEYS);

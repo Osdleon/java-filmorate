@@ -37,12 +37,12 @@ public class FilmService {
         return sortedFilms.descendingSet().stream().limit(count.orElse(10)).collect(Collectors.toList());
     }
 
-    public void save(Film film) {
-        this.filmStorage.save(film);
+    public Film save(Film film) {
+        return this.filmStorage.save(film);
     }
 
-    public void saveOrUpdate(Film film) {
-        this.filmStorage.saveOrUpdate(film);
+    public Film saveOrUpdate(Film film) {
+        return this.filmStorage.saveOrUpdate(film);
     }
 
     public Collection<Film> getFilms() {
