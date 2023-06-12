@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
 import java.sql.*;
@@ -27,7 +28,7 @@ public class FilmDbStorage implements FilmStorage {
     private static final String updateMpaOperation = "UPDATE \"film_mpa\" SET \"mpa_id\" = ? WHERE \"film_id\" = ?";
     private static final String updateGenreOperation = "UPDATE \"film_genre\" SET \"genre_id\" = ? WHERE \"film_id\" = ?";
     private static final String getFilmsOperation = "SELECT * FROM \"film\"";
-    private static final String removeFilmOperation = "DELETE FROM \"film\" WHERE \"id\" = ?;";
+    private static final String removeFilmGenreOperation = "DELETE FROM \"film_genre\" WHERE \"film_id\" = ?;";
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -150,7 +151,8 @@ public class FilmDbStorage implements FilmStorage {
         film.setDescription(resultSet.getString("description"));
         var mpa = getFilmMpa(film.getId());
         mpa.ifPresent(film::setMpa);
-
+        var genres = getFilmGenres(film.getId());
+        film.setGenres(new HashSet<>(genres));
         return film;
     }
 
@@ -200,13 +202,19 @@ public class FilmDbStorage implements FilmStorage {
                 film.getReleaseDate(), film.getDuration(), film.getId());
         if (film.getMpa() != null)
             jdbcTemplate.update(updateMpaOperation, film.getMpa().getId(), film.getId());
-        if (film.getMpa() != null)
-            jdbcTemplate.update(updateMpaOperation, film.getMpa().getId(), film.getId());
+        removeFilmGenres(film.getId());
         for (Genre genre : film.getGenres())
-            jdbcTemplate.update(updateGenreOperation, genre.getId(), film.getId());
+            saveGenre( film.getId(), genre.getId());
         return getFilm(film.getId());
     }
 
+    public void removeFilmGenres(long filmId) {
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(removeFilmGenreOperation);
+            ps.setLong(1, filmId);
+            return ps;
+        });
+    }
     @Override
     public void deleteFilmLike(long filmId, long userId) {
 //        removeFilmOperation
