@@ -164,5 +164,5 @@ WHERE f.user_id = userId AND f.status = TRUE
 ```sql
 SELECT count(*)
 FROM likes l
-WHERE user_id = userId
+WHERE l.user_id = userId
 ```
