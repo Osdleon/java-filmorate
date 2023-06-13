@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,9 +42,6 @@ public class UserService {
         if (friend == null)
             throw new UserNotFoundException(userFriendWithTheId + friendId + doesntExist);
         storage.removeFriend(user, friend);
-      // removeFriend(user, friend);
-//        storage.saveOrUpdate(user);
-//        storage.saveOrUpdate(friend);
     }
 
     public Collection<User> getCommonFriends(Long id, Long otherId) {
@@ -64,7 +60,7 @@ public class UserService {
 
     public User saveOrUpdate(User user) {
         processUserName(user);
-        return this.storage.saveOrUpdate(user);
+        return this.storage.update(user);
     }
 
     void processUserName(User user) {

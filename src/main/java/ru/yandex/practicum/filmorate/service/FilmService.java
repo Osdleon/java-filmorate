@@ -36,8 +36,8 @@ public class FilmService {
     public Collection<Film> getMostLikedFilms(Optional<Integer> count) {
         var films = filmStorage.getFilms();
         TreeSet<Film> sortedFilms = new TreeSet<>(Comparator.comparingInt(
-                f -> ((Film)f).getLikes().size())
-                .thenComparing(f -> ((Film)f).getId())
+                        f -> ((Film) f).getLikes().size())
+                .thenComparing(f -> ((Film) f).getId())
         );
         sortedFilms.addAll(films);
         return sortedFilms.descendingSet().stream().limit(count.orElse(10)).collect(Collectors.toList());
@@ -48,7 +48,7 @@ public class FilmService {
     }
 
     public Film saveOrUpdate(Film film) {
-        return this.filmStorage.saveOrUpdate(film);
+        return this.filmStorage.update(film);
     }
 
     public Collection<Film> getFilms() {

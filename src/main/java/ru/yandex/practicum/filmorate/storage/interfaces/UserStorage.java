@@ -7,7 +7,7 @@ import java.util.Collection;
 public interface UserStorage {
     User save(User user);
 
-    User saveOrUpdate(User user);
+    User update(User user);
 
     User getUser(long userId);
 
@@ -16,5 +16,6 @@ public interface UserStorage {
     Collection<User> getFriends(long userId);
 
     void addFriend(User user, User friend);
+
     void removeFriend(User user, User friend);
 }

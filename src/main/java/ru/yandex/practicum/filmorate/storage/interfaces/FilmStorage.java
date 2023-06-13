@@ -9,7 +9,7 @@ import java.util.Collection;
 public interface FilmStorage {
     Film save(Film film);
 
-    Film saveOrUpdate(Film film);
+    Film update(Film film);
 
     void deleteFilmLike(long filmId, long userId);
 
@@ -18,7 +18,9 @@ public interface FilmStorage {
     Collection<Film> getFilms();
 
     Film getFilm(long filmId);
+
     Mpa getMpa(long filmId);
+
     Genre getGenre(long id);
 
     Collection<Genre> getGenres();

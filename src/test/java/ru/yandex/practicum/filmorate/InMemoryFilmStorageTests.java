@@ -31,7 +31,7 @@ public class InMemoryFilmStorageTests {
         film.setName("name");
         film.setDescription("description");
         film.setId(1);
-        filmsRepository.saveOrUpdate(film);
+        filmsRepository.update(film);
         Assertions.assertEquals(1, (long) filmsRepository.getFilms().size());
         Film firstUser = filmsRepository.getFilms().stream().findFirst().orElse(null);
         Assertions.assertNotNull(firstUser);

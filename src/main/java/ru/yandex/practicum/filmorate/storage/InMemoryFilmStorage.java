@@ -16,16 +16,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     int filmId;
 
     public Film save(Film film) {
-        if (film == null)
-            return null;
+        if (film == null) return null;
         film.setId(++filmId);
         repository.put(film.getId(), film);
         return film;
     }
 
-    public Film saveOrUpdate(Film film) {
-        if (film == null)
-            return null;
+    public Film update(Film film) {
+        if (film == null) return null;
         if (!repository.containsKey(film.getId()))
             throw new FilmNotFoundException("Film with the id: " + film.getId() + "doesn't exist.");
         repository.put(film.getId(), film);
@@ -39,8 +37,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void deleteFilmLike(long filmId, long userId) {
         var film = getFilm(filmId);
         var likes = film.getLikes();
-        if (likes.contains(userId))
-            return;
+        if (likes.contains(userId)) return;
         likes.remove(userId);
         film.setLikes(likes);
     }
@@ -48,8 +45,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void likeFilm(long filmId, long userId) {
         var film = getFilm(filmId);
         var likes = film.getLikes();
-        if (likes.contains(userId))
-            return;
+        if (likes.contains(userId)) return;
         likes.add(userId);
         film.setLikes(likes);
     }

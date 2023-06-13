@@ -28,13 +28,11 @@ public class UserController {
     @PostMapping
     User saveUser(@RequestBody @Valid User user) {
         return userService.save(user);
-        //return user;
     }
 
     @PutMapping
     User updateUser(@RequestBody @Valid User user) {
         return userService.saveOrUpdate(user);
-        //return user;
     }
 
     @GetMapping

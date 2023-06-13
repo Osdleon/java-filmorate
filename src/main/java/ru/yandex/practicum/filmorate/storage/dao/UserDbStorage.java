@@ -41,7 +41,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User saveOrUpdate(User user) {
+    public User update(User user) {
         if (getUser(user.getId()) == null)
             throw new UserNotFoundException("User with the id: " + user.getId() + "doesn't exist.");
         jdbcTemplate.update(updateOperation, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
@@ -51,16 +51,13 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User getUser(long userId) {
         User user = getUserIfExist(userId);
-        if (user == null)
-            throw new UserNotFoundException("User with the id: " + userId + "doesn't exist.");
+        if (user == null) throw new UserNotFoundException("User with the id: " + userId + "doesn't exist.");
         return user;
     }
 
-
     User getUserIfExist(long userId) {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from \"user\" where \"id\" = ?", userId);
-        if (!userRows.next())
-            return null;
+        if (!userRows.next()) return null;
         var user = new User();
         user.setId(userRows.getInt("id"));
         user.setName(userRows.getString("name"));
@@ -95,9 +92,9 @@ public class UserDbStorage implements UserStorage {
     }
 
     public Collection<Boolean> getFriendship(long userId, long friendId) {
-        return jdbcTemplate.query(getFriendshipOperation, (rs, rowNum) ->
-                rs.getBoolean("status"), userId, friendId);
+        return jdbcTemplate.query(getFriendshipOperation, (rs, rowNum) -> rs.getBoolean("status"), userId, friendId);
     }
+
     public void addFriend(User user, User friend) {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(addFriendOperation, Statement.RETURN_GENERATED_KEYS);
@@ -107,6 +104,7 @@ public class UserDbStorage implements UserStorage {
             return ps;
         });
     }
+
     public void removeFriend(User user, User friend) {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(removeFriendOperation, Statement.RETURN_GENERATED_KEYS);

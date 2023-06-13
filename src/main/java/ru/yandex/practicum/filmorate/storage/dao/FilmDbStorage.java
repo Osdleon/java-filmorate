@@ -51,7 +51,6 @@ public class FilmDbStorage implements FilmStorage {
         return getFilm(Objects.requireNonNull(keyHolder.getKey()).intValue());
     }
 
-
     private void saveMpa(long filmId, Long mpaId) {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(insertMpaOperation, Statement.RETURN_GENERATED_KEYS);
@@ -204,7 +203,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film saveOrUpdate(Film film) {
+    public Film update(Film film) {
         if (getFilm(film.getId()) == null)
             throw new FilmNotFoundException("Film with the id: " + film.getId() + "doesn't exist.");
         jdbcTemplate.update(updateOperation, film.getName(), film.getDescription(),

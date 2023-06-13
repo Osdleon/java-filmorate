@@ -31,7 +31,7 @@ public class InMemoryUserStorageTests {
         user.setLogin("login");
         user.setName("name");
         user.setId(1);
-        usersRepository.saveOrUpdate(user);
+        usersRepository.update(user);
         Assertions.assertEquals(1, (long) usersRepository.getUsers().size());
         User firstUser = usersRepository.getUsers().stream().findFirst().orElse(null);
         Assertions.assertNotNull(firstUser);
