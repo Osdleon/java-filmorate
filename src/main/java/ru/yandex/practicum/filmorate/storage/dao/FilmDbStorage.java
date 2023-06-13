@@ -90,8 +90,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Genre getGenre(long id) {
         var getMpaIdOperation = "SELECT * FROM \"genre\" WHERE \"id\" = ?;";
-        return jdbcTemplate.query(getMpaIdOperation, (rs, rowNum) ->
-        {
+        return jdbcTemplate.query(getMpaIdOperation, (rs, rowNum) -> {
             var genre = new Genre();
             genre.setId(rs.getLong("id"));
             genre.setName(rs.getString("name"));
@@ -102,8 +101,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Collection<Genre> getGenres() {
         var getMpaIdOperation = "SELECT * FROM \"genre\"";
-        return jdbcTemplate.query(getMpaIdOperation, (rs, rowNum) ->
-        {
+        return jdbcTemplate.query(getMpaIdOperation, (rs, rowNum) -> {
             var genre = new Genre();
             genre.setId(rs.getLong("id"));
             genre.setName(rs.getString("name"));
