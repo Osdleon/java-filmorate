@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
-public class InMemoryUserStorageTests {
+class InMemoryUserStorageTests {
     @Test
     void saveNullTest() {
         var usersRepository = new InMemoryUserStorage();

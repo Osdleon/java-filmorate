@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -72,21 +72,21 @@ class UserDbStorageTests {
     }
 
     @Test
-    public void testFindUserById() {
+    void testFindUserById() {
         createUser();
         var user = userStorage.getUser(1);
         checkUser(user);
     }
 
     @Test
-    public void testFindUser1ById() {
+    void testFindUser1ById() {
         createUser1();
         var user = userStorage.getUser(1);
         checkUser1(user);
     }
 
     @Test
-    public void testUpdateUser() {
+    void testUpdateUser() {
         createUser();
         createUser1(1, true);
         var user = userStorage.getUser(1);
@@ -94,7 +94,7 @@ class UserDbStorageTests {
     }
 
     @Test
-    public void testGetUsers() {
+    void testGetUsers() {
         createUser();
         createUser1(2);
         var users = userStorage.getUsers();
@@ -104,7 +104,7 @@ class UserDbStorageTests {
     }
 
     @Test
-    public void testAddGetUsers() {
+    void testAddGetUsers() {
         createUser();
         createUser1(2);
         var users = userStorage.getUsers();
@@ -114,7 +114,7 @@ class UserDbStorageTests {
     }
 
     @Test
-    public void testAddGetFriends() {
+    void testAddGetFriends() {
         createUser();
         createUser1(2);
         var user = userStorage.getUser(1);

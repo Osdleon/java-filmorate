@@ -11,8 +11,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.dao.FilmDbStorage;
-import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -101,21 +101,21 @@ class FilmDbStorageTests {
     }
 
     @Test
-    public void testFindFilmById() {
+    void testFindFilmById() {
         createFilm();
         var film = filmStorage.getFilm(1);
         checkFilm(film);
     }
 
     @Test
-    public void testFindFilm1ById() {
+    void testFindFilm1ById() {
         createFilm1();
         var film = filmStorage.getFilm(1);
         checkFilm1(film);
     }
 
     @Test
-    public void testUpdateFilm() {
+    void testUpdateFilm() {
         createFilm();
         createFilm1(1, true);
         var film = filmStorage.getFilm(1);
@@ -123,7 +123,7 @@ class FilmDbStorageTests {
     }
 
     @Test
-    public void testGetFilms() {
+    void testGetFilms() {
         createFilm();
         createFilm1(2);
         var films = filmStorage.getFilms();
@@ -133,14 +133,14 @@ class FilmDbStorageTests {
     }
 
     @Test
-    public void testGetMpa() {
+    void testGetMpa() {
         createFilm1();
         var film = filmStorage.getFilm(1);
         checkFilm1(film);
     }
 
     @Test
-    public void testGetMpas() {
+    void testGetMpas() {
         var mpas = filmStorage.getMpas();
         Assertions.assertEquals(5, mpas.size());
         var mpa = mpas.stream().findFirst().orElse(null);
@@ -155,7 +155,7 @@ class FilmDbStorageTests {
     }
 
     @Test
-    public void testGenres() {
+    void testGenres() {
         var genres = filmStorage.getGenres();
         Assertions.assertEquals(6, genres.size());
         var genre = genres.stream().findFirst().orElse(null);
@@ -170,7 +170,7 @@ class FilmDbStorageTests {
     }
 
     @Test
-    public void testGetGenre() {
+    void testGetGenre() {
         var genre = filmStorage.getGenre(4);
         Assertions.assertNotNull(genre);
         Assertions.assertEquals(4, genre.getId());
@@ -178,7 +178,7 @@ class FilmDbStorageTests {
     }
 
     @Test
-    public void testLikeFilm() {
+    void testLikeFilm() {
         createUser();
         createFilm();
         filmStorage.likeFilm(1, 1);
@@ -191,7 +191,7 @@ class FilmDbStorageTests {
     }
 
     @Test
-    public void testDeleteLikeFilm() {
+    void testDeleteLikeFilm() {
         createUser();
         createFilm();
         filmStorage.likeFilm(1, 1);

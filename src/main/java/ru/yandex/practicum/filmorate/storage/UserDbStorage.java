@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.dao;
+package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -16,11 +16,11 @@ import java.util.Objects;
 @Component("userDbStorage")
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
-    private static final String insertOperation = "INSERT INTO \"user\" (\"email\", \"login\", \"name\", \"birthday\") VALUES(?, ?, ?, ?);";
-    private static final String updateOperation = "UPDATE \"user\" SET \"email\" = ?, \"login\"  = ?, \"name\"  = ?, \"birthday\" = ? WHERE \"id\" = ?";
-    private static final String addFriendOperation = "INSERT INTO \"friends\" (\"user_id\", \"friend_id\", \"status\") VALUES(?, ?, ?);";
-    private static final String getFriendshipOperation = "SELECT \"friends\" WHERE \"user_id\" = ? AND \"friend_id\" = ?;";
-    private static final String removeFriendOperation = "DELETE FROM \"friends\" WHERE \"user_id\" = ? AND \"friend_id\" = ?;";
+    private static final String insertOperation = "INSERT INTO \"user\" (email, login, name, birthday) VALUES(?, ?, ?, ?);";
+    private static final String updateOperation = "UPDATE \"user\" SET email = ?, login  = ?, name  = ?, birthday = ? WHERE id = ?";
+    private static final String addFriendOperation = "INSERT INTO friends (user_id, friend_id, status) VALUES(?, ?, ?);";
+    private static final String getFriendshipOperation = "SELECT friends WHERE user_id = ? AND friend_id = ?;";
+    private static final String removeFriendOperation = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?;";
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -56,7 +56,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     User getUserIfExist(long userId) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from \"user\" where \"id\" = ?", userId);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from \"user\" where id = ?", userId);
         if (!userRows.next()) return null;
         var user = new User();
         user.setId(userRows.getInt("id"));
@@ -70,7 +70,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getUsers() {
-        var sql = "select * from \"user\" order by \"name\"";
+        var sql = "select * from \"user\" order by name";
         return jdbcTemplate.query(sql, (rs, rowNum) -> createUser(rs));
     }
 
@@ -87,7 +87,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> getFriends(long userId) {
-        var sql = "SELECT u2.\"id\" AS id, u2.\"email\" AS email, u2.\"name\" AS name," + " u2.\"birthday\" AS birthday, u2.\"login\" AS login" + " FROM \"user\" AS u" + " INNER JOIN \"friends\" f ON f.\"user_id\" = u.\"id\"" + " INNER JOIN \"user\" u2 ON f.\"friend_id\" = u2.\"id\"" + " WHERE f.\"user_id\" = ? AND f.\"status\" = TRUE";
+        var sql = "SELECT u2.id AS id, u2.email AS email, u2.name AS name," + " u2.birthday AS birthday, u2.login AS login" + " FROM \"user\" AS u" + " INNER JOIN friends f ON f.user_id = u.id" + " INNER JOIN \"user\" u2 ON f.friend_id = u2.id" + " WHERE f.user_id = ? AND f.status = TRUE";
         return jdbcTemplate.query(sql, (rs, rowNum) -> createUser(rs), userId);
     }
 

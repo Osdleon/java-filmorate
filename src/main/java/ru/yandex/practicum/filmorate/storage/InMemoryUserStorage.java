@@ -48,9 +48,9 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public void removeFriend(User user, User friend) {
-        if (user.getFriends() == null || !user.getFriends().contains(friend.getId()))
+        if (!user.getFriends().stream().filter(Objects::nonNull).collect(Collectors.toSet()).contains(friend.getId()))
             throw new UserNotFoundException(userWithTheId + user.getId() + doesntHaveFriendWithId + friend.getId() + " .");
-        if (friend.getFriends() == null || !friend.getFriends().contains(user.getId()))
+        if (!friend.getFriends().stream().filter(Objects::nonNull).collect(Collectors.toSet()).contains(user.getId()))
             throw new UserNotFoundException(userWithTheId + friend.getId() + doesntHaveFriendWithId + user.getId() + " .");
         user.getFriends().remove(friend.getId());
         friend.getFriends().remove(user.getId());
@@ -59,8 +59,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public void addFriend(User user, User friend) {
-        if (user.getFriends() == null) user.setFriends(new HashSet<>());
-        else if (user.getFriends().contains(friend.getId()))
+        if (user.getFriends().contains(friend.getId()))
             throw new UserNotFoundException(userWithTheId + user.getId() + alreadyHaveFriendWithId + friend.getId() + " .");
         if (friend.getFriends() == null) friend.setFriends(new HashSet<>());
         else if (friend.getFriends().contains(user.getId()))

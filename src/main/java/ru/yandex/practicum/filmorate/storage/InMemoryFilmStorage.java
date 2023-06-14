@@ -58,21 +58,21 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Mpa getMpa(long id) {
-        return null;
+        throw new UnsupportedOperationException("\"getMpa\" getter is not implemented");
     }
 
     @Override
     public Genre getGenre(long id) {
-        return null;
+        throw new UnsupportedOperationException("\"getGenre\" getter is not implemented");
     }
 
     @Override
     public Collection<Genre> getGenres() {
-        return null;
+        throw new UnsupportedOperationException("\"getGenres\" getter is not implemented");
     }
 
     @Override
     public Collection<Mpa> getMpas() {
-        return null;
+        throw new UnsupportedOperationException("\"getMpas\" getter is not implemented");
     }
 }

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
-public class InMemoryFilmStorageTests {
+class InMemoryFilmStorageTests {
     @Test
     void saveNullTest() {
         var filmsRepository = new InMemoryFilmStorage();

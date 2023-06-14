@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.dao;
+package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -20,15 +20,15 @@ import java.util.Optional;
 @Component("filmDbStorage")
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
-    private static final String insertOperation = "INSERT INTO \"film\" (\"name\", \"description\", \"release_date\", \"duration\") VALUES(?, ?, ?, ?);";
-    private static final String insertMpaOperation = "INSERT INTO \"film_mpa\" (\"film_id\", \"mpa_id\") VALUES(?, ?);";
-    private static final String insertGenreOperation = "INSERT INTO \"film_genre\" (\"film_id\", \"genre_id\") VALUES(?, ?);";
-    private static final String updateOperation = "UPDATE \"film\" SET \"name\" = ?, \"description\"  = ?, \"release_date\"  = ?, \"duration\" = ? WHERE \"id\" = ?";
-    private static final String updateMpaOperation = "UPDATE \"film_mpa\" SET \"mpa_id\" = ? WHERE \"film_id\" = ?";
-    private static final String getFilmsOperation = "SELECT * FROM \"film\";";
-    private static final String removeFilmGenreOperation = "DELETE FROM \"film_genre\" WHERE \"film_id\" = ?;";
-    private static final String insertLikeOperation = "INSERT INTO \"likes\" (\"film_id\", \"user_id\") VALUES(?, ?);";
-    private static final String deleteLikeOperation = "DELETE FROM \"likes\" WHERE \"film_id\" = ? AND \"user_id\" = ?;";
+    private static final String insertOperation = "INSERT INTO film (name, description, release_date, duration) VALUES(?, ?, ?, ?);";
+    private static final String insertMpaOperation = "INSERT INTO film_mpa (film_id, mpa_id) VALUES(?, ?);";
+    private static final String insertGenreOperation = "INSERT INTO film_genre (film_id, genre_id) VALUES(?, ?);";
+    private static final String updateOperation = "UPDATE film SET name = ?, description  = ?, release_date  = ?, duration = ? WHERE id = ?";
+    private static final String updateMpaOperation = "UPDATE film_mpa SET mpa_id = ? WHERE film_id = ?";
+    private static final String getFilmsOperation = "SELECT * FROM film;";
+    private static final String removeFilmGenreOperation = "DELETE FROM film_genre WHERE film_id = ?;";
+    private static final String insertLikeOperation = "INSERT INTO likes (film_id, user_id) VALUES(?, ?);";
+    private static final String deleteLikeOperation = "DELETE FROM likes WHERE film_id = ? AND user_id = ?;";
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -78,7 +78,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     public Mpa getMpa(long id) {
-        var getMpaOperation = "SELECT * FROM \"mpa\" WHERE \"id\" = ?;";
+        var getMpaOperation = "SELECT * FROM mpa WHERE id = ?;";
         return jdbcTemplate.query(getMpaOperation, (rs, rowNum) -> {
             var mpa = new Mpa();
             mpa.setId(rs.getLong("id"));
@@ -89,7 +89,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Genre getGenre(long id) {
-        var getMpaIdOperation = "SELECT * FROM \"genre\" WHERE \"id\" = ?;";
+        var getMpaIdOperation = "SELECT * FROM genre WHERE id = ?;";
         return jdbcTemplate.query(getMpaIdOperation, (rs, rowNum) -> {
             var genre = new Genre();
             genre.setId(rs.getLong("id"));
@@ -100,7 +100,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Genre> getGenres() {
-        var getMpaIdOperation = "SELECT * FROM \"genre\"";
+        var getMpaIdOperation = "SELECT * FROM genre";
         return jdbcTemplate.query(getMpaIdOperation, (rs, rowNum) -> {
             var genre = new Genre();
             genre.setId(rs.getLong("id"));
@@ -111,7 +111,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Mpa> getMpas() {
-        var getMpaOperation = "SELECT * FROM \"mpa\"";
+        var getMpaOperation = "SELECT * FROM mpa";
         return jdbcTemplate.query(getMpaOperation, (rs, rowNum) -> {
             var mpa = new Mpa();
             mpa.setId(rs.getLong("id"));
@@ -121,7 +121,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     Film getFilmIfExist(long filmId) {
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("select * from \"film\" where \"id\" = ?", filmId);
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("select * from film where id = ?", filmId);
         if (!filmRows.next())
             return null;
         var film = new Film();
@@ -158,19 +158,19 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Optional<Mpa> getFilmMpa(long filmId) {
-        var getMpaIdOperation = "SELECT * FROM \"film_mpa\" WHERE \"film_id\" = ?;";
+        var getMpaIdOperation = "SELECT * FROM film_mpa WHERE film_id = ?;";
         return jdbcTemplate.query(getMpaIdOperation, (rs, rowNum) ->
                 createMpa(rs), filmId).stream().findFirst();
     }
 
     private Collection<Genre> getFilmGenres(long filmId) {
-        var getGenreOperation = "SELECT * FROM \"film_genre\" WHERE \"film_id\" = ?;";
+        var getGenreOperation = "SELECT * FROM film_genre WHERE film_id = ?;";
         return jdbcTemplate.query(getGenreOperation, (rs, rowNum) ->
                 createGenre(rs), filmId);
     }
 
     private Collection<Long> getFilmLikes(long filmId) {
-        var getGenreOperation = "SELECT \"user_id\" FROM \"likes\" WHERE \"film_id\" = ?;";
+        var getGenreOperation = "SELECT user_id FROM likes WHERE film_id = ?;";
         return jdbcTemplate.query(getGenreOperation, (rs, rowNum) -> rs.getLong("user_id"), filmId);
     }
 
@@ -189,13 +189,13 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Optional<String> getGenreName(long genreId) {
-        var getMpaIdOperation = "SELECT * FROM \"genre\" WHERE \"id\" = ?;";
+        var getMpaIdOperation = "SELECT * FROM genre WHERE id = ?;";
         return jdbcTemplate.query(getMpaIdOperation, (rs, rowNum) ->
                 rs.getString("name"), genreId).stream().findFirst();
     }
 
     private Optional<String> getMpaName(long mpaId) {
-        var getMpaIdOperation = "SELECT * FROM \"mpa\" WHERE \"id\" = ?;";
+        var getMpaIdOperation = "SELECT * FROM mpa WHERE id = ?;";
         return jdbcTemplate.query(getMpaIdOperation, (rs, rowNum) ->
                 rs.getString("name"), mpaId).stream().findFirst();
     }
