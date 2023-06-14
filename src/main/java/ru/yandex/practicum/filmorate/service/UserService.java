@@ -1,53 +1,27 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private final String userWithTheId = "User with the id: ";
+    public static final String userWithTheId = "User with the id: ";
     private static final String userFriendWithTheId = "User friend with the id: ";
     private static final String doesntExist = "doesn't exist.";
-    private static final String alreadyHaveFriendWithId = "already have friend with id:";
-    private static final String doesntHaveFriendWithId = "doesn't have friend with id:";
-    InMemoryUserStorage storage;
+    public static final String alreadyHaveFriendWithId = "already have friend with id:";
+    public static final String doesntHaveFriendWithId = "doesn't have friend with id:";
+    UserStorage storage;
 
     @Autowired
-    public UserService(InMemoryUserStorage storage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage storage) {
         this.storage = storage;
-    }
-
-    void addFriend(User user, User friend) {
-        if (user.getFriends() == null)
-            user.setFriends(new HashSet<>());
-        else if (user.getFriends().contains(friend.getId()))
-            throw new UserNotFoundException(userWithTheId + user.getId() + alreadyHaveFriendWithId
-                    + friend.getId() + " .");
-        if (friend.getFriends() == null)
-            friend.setFriends(new HashSet<>());
-        else if (friend.getFriends().contains(user.getId()))
-            throw new UserNotFoundException(userWithTheId + friend.getId() + alreadyHaveFriendWithId
-                    + user.getId() + " .");
-        user.getFriends().add(friend.getId());
-        friend.getFriends().add(user.getId());
-    }
-
-    void removeFriend(User user, User friend) {
-        if (user.getFriends() == null || !user.getFriends().contains(friend.getId()))
-            throw new UserNotFoundException(userWithTheId + user.getId() + doesntHaveFriendWithId
-                    + friend.getId() + " .");
-        if (friend.getFriends() == null || !friend.getFriends().contains(user.getId()))
-            throw new UserNotFoundException(userWithTheId + friend.getId() + doesntHaveFriendWithId
-                    + user.getId() + " .");
-        user.getFriends().remove(friend.getId());
-        friend.getFriends().remove(user.getId());
     }
 
     public void addFriend(Long userId, Long friendId) {
@@ -57,9 +31,7 @@ public class UserService {
         var friend = storage.getUser(friendId);
         if (friend == null)
             throw new UserNotFoundException(userFriendWithTheId + friendId + doesntExist);
-        addFriend(user, friend);
-        storage.saveOrUpdate(user);
-        storage.saveOrUpdate(friend);
+        storage.addFriend(user, friend);
     }
 
     public void removeFriend(Long userId, Long friendId) {
@@ -69,9 +41,7 @@ public class UserService {
         var friend = storage.getUser(friendId);
         if (friend == null)
             throw new UserNotFoundException(userFriendWithTheId + friendId + doesntExist);
-        removeFriend(user, friend);
-        storage.saveOrUpdate(user);
-        storage.saveOrUpdate(friend);
+        storage.removeFriend(user, friend);
     }
 
     public Collection<User> getCommonFriends(Long id, Long otherId) {
@@ -83,16 +53,26 @@ public class UserService {
                 .collect(Collectors.toSet());
     }
 
-    public void save(User user) {
-        this.storage.save(user);
+    public User save(User user) {
+        processUserName(user);
+        return this.storage.save(user);
     }
 
-    public void saveOrUpdate(User user) {
-        this.storage.saveOrUpdate(user);
+    public User saveOrUpdate(User user) {
+        processUserName(user);
+        return this.storage.update(user);
+    }
+
+    void processUserName(User user) {
+        if (user.getName() == null || user.getName().isBlank())
+            user.setName(user.getLogin());
     }
 
     public User getUser(long userId) {
-        return this.storage.getUser(userId);
+        var user = this.storage.getUser(userId);
+        if (user == null)
+            throw new UserNotFoundException("User with the id: " + userId + "doesn't exist.");
+        return user;
     }
 
     public Collection<User> getUsers() {

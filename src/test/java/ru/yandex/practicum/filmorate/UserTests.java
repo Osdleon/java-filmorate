@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -41,17 +40,6 @@ public class UserTests {
     void validateLogin() {
         var user = createTestUser();
         user.setLogin("1");
-        var violations = validator.validate(user);
-        Assertions.assertEquals(0, violations.size());
-    }
-
-    @Test
-    void validateEmptyName() {
-        var user = createTestUser();
-        user.setName("");
-        var r = new InMemoryUserStorage();
-        r.save(user);
-        Assertions.assertEquals(user.getLogin(), user.getName());
         var violations = validator.validate(user);
         Assertions.assertEquals(0, violations.size());
     }

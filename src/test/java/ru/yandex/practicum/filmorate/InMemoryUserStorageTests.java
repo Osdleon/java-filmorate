@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
-public class InMemoryUserStorageTests {
+class InMemoryUserStorageTests {
     @Test
     void saveNullTest() {
         var usersRepository = new InMemoryUserStorage();
@@ -31,7 +31,7 @@ public class InMemoryUserStorageTests {
         user.setLogin("login");
         user.setName("name");
         user.setId(1);
-        usersRepository.saveOrUpdate(user);
+        usersRepository.update(user);
         Assertions.assertEquals(1, (long) usersRepository.getUsers().size());
         User firstUser = usersRepository.getUsers().stream().findFirst().orElse(null);
         Assertions.assertNotNull(firstUser);

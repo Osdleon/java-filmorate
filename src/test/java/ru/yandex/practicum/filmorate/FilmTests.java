@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
-public class FilmTests {
+class FilmTests {
     private static final Validator validator;
 
     public static String getLongString(int targetStringLength) {

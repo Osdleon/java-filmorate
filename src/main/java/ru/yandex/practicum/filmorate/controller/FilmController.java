@@ -33,15 +33,13 @@ public class FilmController {
     @PostMapping
     Film saveFilm(@RequestBody @Valid Film film) {
         validationService.validateFilmDate(film);
-        filmService.save(film);
-        return film;
+        return filmService.save(film);
     }
 
     @PutMapping
     Film updateFilm(@RequestBody @Valid Film film) {
         validationService.validateFilmDate(film);
-        filmService.saveOrUpdate(film);
-        return film;
+        return filmService.saveOrUpdate(film);
     }
 
     @GetMapping
@@ -50,7 +48,7 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    Film getUser(@PathVariable long id) {
+    Film getFilm(@PathVariable long id) {
         return filmService.getFilm(id);
     }
 

@@ -20,8 +20,11 @@ public class Film {
     @Positive
     long duration;
     Set<Long> likes;
+    Set<Genre> genres;
+    Mpa mpa;
 
     public Film() {
+        genres = new HashSet<>();
         likes = new HashSet<>();
     }
 }
